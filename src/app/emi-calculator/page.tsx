@@ -6,7 +6,7 @@ import { GlassCard } from '@/components/ui/glass-card'
 import { motion } from 'framer-motion'
 import Decimal from 'decimal.js'
 import StructuredData from '@/components/seo/structured-data'
-import { getWebPageJsonLd, siteUrl } from '@/lib/seo'
+import { getWebPageJsonLd, getWebAppJsonLd, siteUrl } from '@/lib/seo'
 
 export default function EMICalculator() {
   const [loanAmount, setLoanAmount] = useState<string>('1000000')
@@ -120,7 +120,12 @@ export default function EMICalculator() {
         name: 'EMI Calculator',
         description: 'Calculate monthly EMI, total interest, and amortization schedule.',
         url: `${siteUrl}/emi-calculator`,
-        breadcrumb: ['Home', 'EMI Calculator'],
+        breadcrumb: ['Home', 'EMI Calculator']
+      })} />
+      <StructuredData data={getWebAppJsonLd({
+        name: 'EMI Calculator',
+        description: 'Web-based EMI calculator to compute monthly payments and amortization.',
+        url: `${siteUrl}/emi-calculator`,
         applicationCategory: 'Finance'
       })} />
       {/* Header */}

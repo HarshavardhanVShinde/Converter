@@ -1,29 +1,82 @@
 import type { Metadata } from 'next'
-
-export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || 'https://techsynth.net'
+export const siteUrl = 'https://techsynth.co'
 export const siteName = 'ToolSynth'
 
-export type SEOArgs = {
-  title: string
+export type WebPageJsonLdInput = {
+  name: string
   description: string
-  keywords?: string[] | string
-  path: string // route path beginning with '/'
+  url: string
+  breadcrumb?: string[]
 }
 
-export function buildMetadata({ title, description, keywords, path }: SEOArgs): Metadata {
-  const canonical = `${siteUrl}${path}`
+export function getWebPageJsonLd(input: WebPageJsonLdInput) {
+  const { name, description, url, breadcrumb } = input
+  const data: any = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name,
+    description,
+    url,
+  }
+
+  if (breadcrumb && breadcrumb.length > 0) {
+    data.breadcrumb = {
+      '@type': 'BreadcrumbList',
+      itemListElement: breadcrumb.map((label, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: label,
+        item: index === breadcrumb.length - 1 ? url : `${siteUrl}/${label.toLowerCase().replace(/\s+/g, '-')}`,
+      })),
+    }
+  }
+
+  return data
+}
+
+export type WebAppJsonLdInput = {
+  name: string
+  description: string
+  url: string
+  applicationCategory?: string
+}
+
+export function getWebAppJsonLd(input: WebAppJsonLdInput) {
+  const { name, description, url, applicationCategory } = input
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name,
+    description,
+    url,
+    applicationCategory,
+    offers: {
+      '@type': 'Offer',
+      price: 0,
+      priceCurrency: 'INR',
+      category: applicationCategory || 'Utility',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: siteName,
+      url: siteUrl,
+    },
+  }
+}
+
+export function buildMetadata({ title, description, keywords, path }: { title: string, description: string, keywords: string[] | string, path: string }): Metadata {
+  const url = `${siteUrl}${path}`
+  const kw = Array.isArray(keywords) ? keywords : keywords.split(',').map(k => k.trim()).filter(Boolean)
   return {
     title,
     description,
-    keywords,
-    metadataBase: new URL(siteUrl),
-    alternates: { canonical },
+    keywords: kw,
     openGraph: {
       title,
       description,
-      url: canonical,
+      url,
       siteName,
-      type: 'website',
+      type: 'article',
       locale: 'en_US',
     },
     twitter: {
@@ -31,46 +84,8 @@ export function buildMetadata({ title, description, keywords, path }: SEOArgs): 
       title,
       description,
     },
-    robots: {
-      index: true,
-      follow: true,
-    },
-  }
-}
-
-export type WebPageJSONLD = {
-  name: string
-  description: string
-  url: string
-  breadcrumb?: string[]
-  applicationCategory?: string
-}
-
-export function getWebPageJsonLd({ name, description, url, breadcrumb, applicationCategory }: WebPageJSONLD) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'WebPage',
-    name,
-    description,
-    url,
-    isPartOf: {
-      '@type': 'WebSite',
-      name: siteName,
-      url: siteUrl,
-    },
-    breadcrumb: breadcrumb ? {
-      '@type': 'BreadcrumbList',
-      itemListElement: breadcrumb.map((label, index) => ({
-        '@type': 'ListItem',
-        position: index + 1,
-        name: label,
-        item: index === 0 ? siteUrl : undefined,
-      }))
-    } : undefined,
-    potentialAction: applicationCategory ? {
-      '@type': 'SearchAction',
-      target: `${siteUrl}/?q={query}`,
-      'query-input': 'required name=query'
-    } : undefined,
+    robots: { index: true, follow: true },
+    alternates: { canonical: url },
+    metadataBase: new URL(siteUrl),
   }
 }

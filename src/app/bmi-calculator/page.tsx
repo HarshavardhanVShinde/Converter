@@ -5,7 +5,7 @@ import { Heart, Weight, Ruler, Activity } from 'lucide-react'
 import { GlassCard } from '@/components/ui/glass-card'
 import { motion } from 'framer-motion'
 import StructuredData from '@/components/seo/structured-data'
-import { getWebPageJsonLd, siteUrl } from '@/lib/seo'
+import { getWebPageJsonLd, getWebAppJsonLd, siteUrl } from '@/lib/seo'
 
 export default function BMICalculator() {
   const [weight, setWeight] = useState<string>('70')
@@ -125,6 +125,12 @@ export default function BMICalculator() {
         url: `${siteUrl}/bmi-calculator`,
         breadcrumb: ['Home', 'BMI Calculator']
       })} />
+      <StructuredData data={getWebAppJsonLd({
+        name: 'BMI Calculator',
+        description: 'Web-based BMI calculator to compute body mass index and health category.',
+        url: `${siteUrl}/bmi-calculator`,
+        applicationCategory: 'Health'
+      })} />
       {/* Header */}
       <div className="mb-12 text-center">
         <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 to-pink-500 shadow-soft text-white">
@@ -153,7 +159,7 @@ export default function BMICalculator() {
                 onClick={() => setUnit('metric')}
                 className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all ${
                   unit === 'metric'
-                    ? 'bg-white dark:bg-white/20 text-gray-900 dark:text-white shadow-soft border border-white/40'
+                    ? 'bg-white dark:bg.white/20 text-gray-900 dark:text-white shadow-soft border border-white/40'
                     : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
@@ -245,7 +251,7 @@ export default function BMICalculator() {
                 { label: 'Obese', range: '≥ 30.0', color: 'red' }
               ].map((item) => (
                 <div key={item.label} className={`flex items-center justify-between p-3 rounded-xl bg-${item.color}-50 dark:bg-${item.color}-500/10 border border-${item.color}-200 dark:border-${item.color}-500/30`}>
-                  <span className={`text-sm font-medium text-${item.color}-800 dark:text-${item.color}-300`}>{item.label}</span>
+                  <span className={`text.sm font-medium text-${item.color}-800 dark:text-${item.color}-300`}>{item.label}</span>
                   <span className={`text-sm text-${item.color}-600 dark:text-${item.color}-400`}>{item.range}</span>
                 </div>
               ))}
