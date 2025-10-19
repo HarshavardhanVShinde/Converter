@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Calculator, DollarSign, Calendar, Percent, PieChart } from 'lucide-react'
+import { DollarSign, Calendar, Percent } from 'lucide-react'
 import { GlassCard } from '@/components/ui/glass-card'
 import { motion } from 'framer-motion'
 import Decimal from 'decimal.js'
+import StructuredData from '@/components/seo/structured-data'
+import { getWebPageJsonLd, siteUrl } from '@/lib/seo'
 
 export default function EMICalculator() {
   const [loanAmount, setLoanAmount] = useState<string>('1000000')
@@ -114,11 +116,15 @@ export default function EMICalculator() {
 
   return (
     <div className="pt-8 pb-24 max-w-7xl mx-auto px-4 sm:px-8">
+      <StructuredData data={getWebPageJsonLd({
+        name: 'EMI Calculator',
+        description: 'Calculate monthly EMI, total interest, and amortization schedule.',
+        url: `${siteUrl}/emi-calculator`,
+        breadcrumb: ['Home', 'EMI Calculator'],
+        applicationCategory: 'Finance'
+      })} />
       {/* Header */}
       <div className="mb-12 text-center">
-        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 shadow-soft text-white">
-          <Calculator className="h-10 w-10" />
-        </div>
         <h1 className="font-extrabold tracking-tight text-4xl sm:text-5xl bg-clip-text text-transparent bg-gradient-to-b from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 mb-4">
           EMI Calculator
         </h1>
@@ -222,9 +228,6 @@ export default function EMICalculator() {
                     {formatCurrency(results.emi)}
                   </p>
                 </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center shadow-soft">
-                  <Calculator className="h-6 w-6 text-white" />
-                </div>
               </div>
             </GlassCard>
 
@@ -236,9 +239,6 @@ export default function EMICalculator() {
                     {formatCurrency(results.totalInterest)}
                   </p>
                 </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-pink-500 rounded-xl flex items-center justify-center shadow-soft">
-                  <Percent className="h-6 w-6 text-white" />
-                </div>
               </div>
             </GlassCard>
 
@@ -249,9 +249,6 @@ export default function EMICalculator() {
                   <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                     {formatCurrency(results.totalAmount)}
                   </p>
-                </div>
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-soft">
-                  <DollarSign className="h-6 w-6 text-white" />
                 </div>
               </div>
             </GlassCard>

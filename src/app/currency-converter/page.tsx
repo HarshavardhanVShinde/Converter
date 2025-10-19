@@ -58,10 +58,42 @@ export default function CurrencyConverter() {
   const [toCurrency, setToCurrency] = useState<string>('INR')
   const [convertedAmount, setConvertedAmount] = useState<number>(0)
   const [exchangeRate, setExchangeRate] = useState<number>(0)
+  const [rates, setRates] = useState<Record<string, number>>(exchangeRates)
+  const [loadingRates, setLoadingRates] = useState<boolean>(false)
+  const [fetchError, setFetchError] = useState<string | null>(null)
+
+  // Fetch live exchange rates with ISR-cached API
+  useEffect(() => {
+    let cancelled = false
+    async function loadRates() {
+      setLoadingRates(true)
+      setFetchError(null)
+      try {
+        const res = await fetch(`/api/exchange?base=${fromCurrency}`, {
+          headers: { Accept: 'application/json' },
+          cache: 'force-cache',
+        })
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        const data = await res.json()
+        if (!cancelled && data?.rates) {
+          setRates(data.rates as Record<string, number>)
+        }
+      } catch (e) {
+        setFetchError('Failed to load live rates. Using offline defaults.')
+        setRates(exchangeRates)
+      } finally {
+        if (!cancelled) setLoadingRates(false)
+      }
+    }
+    loadRates()
+    return () => { cancelled = true }
+  }, [fromCurrency])
+
+  const rateFor = (code: string) => (rates[code] ?? exchangeRates[code])
 
   const convertCurrency = () => {
     const inputAmount = parseFloat(amount) || 0
-    
+
     if (inputAmount === 0 || fromCurrency === toCurrency) {
       setConvertedAmount(inputAmount)
       setExchangeRate(1)
@@ -69,17 +101,17 @@ export default function CurrencyConverter() {
     }
 
     // Convert from source currency to USD, then to target currency
-    const amountInUSD = inputAmount / exchangeRates[fromCurrency]
-    const finalAmount = amountInUSD * exchangeRates[toCurrency]
-    const rate = exchangeRates[toCurrency] / exchangeRates[fromCurrency]
-    
+    const amountInUSD = inputAmount / rateFor(fromCurrency)
+    const finalAmount = amountInUSD * rateFor(toCurrency)
+    const rate = rateFor(toCurrency) / rateFor(fromCurrency)
+
     setConvertedAmount(finalAmount)
     setExchangeRate(rate)
   }
 
   useEffect(() => {
     convertCurrency()
-  }, [amount, fromCurrency, toCurrency])
+  }, [amount, fromCurrency, toCurrency, rates])
 
   const swapCurrencies = () => {
     setFromCurrency(toCurrency)
@@ -89,7 +121,7 @@ export default function CurrencyConverter() {
   const formatAmount = (value: number, currencyCode: string) => {
     const currency = currencies.find(c => c.code === currencyCode)
     if (!currency) return value.toFixed(2)
-    
+
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currencyCode,
@@ -107,9 +139,9 @@ export default function CurrencyConverter() {
       { from: 'AUD', to: 'USD', label: 'AUD to USD' },
       { from: 'CAD', to: 'USD', label: 'CAD to USD' },
     ]
-    
+
     return pairs.map(pair => {
-      const rate = exchangeRates[pair.to] / exchangeRates[pair.from]
+      const rate = rateFor(pair.to) / rateFor(pair.from)
       return { ...pair, rate }
     })
   }
@@ -222,7 +254,7 @@ export default function CurrencyConverter() {
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Conversions</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {[1, 5, 10, 100].map((quickAmount) => {
-                    const converted = (quickAmount / exchangeRates[fromCurrency]) * exchangeRates[toCurrency]
+                    const converted = (quickAmount / rateFor(fromCurrency)) * rateFor(toCurrency)
                     return (
                       <button
                         key={quickAmount}

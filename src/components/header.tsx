@@ -12,6 +12,7 @@ import {
   Menu,
   X,
   ChevronDown,
+  Percent,
 } from "lucide-react";
 import ThemeToggle from "@/components/ui/theme-toggle";
 import { useNavUI } from "@/components/ui/nav-context";
@@ -36,7 +37,7 @@ const categories: NavCategory[] = NAV_CATEGORIES.map(cat => ({
     switch (i.icon) {
       case 'DollarSign': iconEl = <DollarSign className="ml-2 h-4 w-4 text-indigo-500" />; break;
       case 'Calculator': iconEl = <Calculator className="ml-2 h-4 w-4 text-blue-500" />; break;
-      case 'Percent': iconEl = <DollarSign className="ml-2 h-4 w-4 text-indigo-500" />; break; // placeholder
+      case 'Percent': iconEl = <Percent className="ml-2 h-4 w-4 text-purple-500" />; break;
       case 'Heart': iconEl = <Heart className="ml-2 h-4 w-4 text-emerald-500" />; break;
       case 'Activity': iconEl = <Heart className="ml-2 h-4 w-4 text-emerald-500" />; break; // fallback for activity
       case 'Calendar': iconEl = <Calculator className="ml-2 h-4 w-4 text-blue-500" />; break; // placeholder until proper icon
@@ -57,7 +58,6 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdown, setDropdown] = useState<DropdownState>({ openKey: null, viaKeyboard: false });
   const navRef = useRef<HTMLDivElement | null>(null);
-  const { toggleSidebar, sidebarOpen } = useNavUI();
 
   // Close on route change (mobile)
   useEffect(() => {
@@ -108,20 +108,8 @@ export default function Header() {
         <div className="flex items-center justify-between h-16 border-b border-white/20 bg-white/80 dark:bg-white/10 backdrop-blur-md shadow-sm px-4 sm:px-8">
           {/* Left / Brand */}
           <div className="flex items-center gap-3">
-            <button
-              onClick={toggleSidebar}
-              aria-label={sidebarOpen ? 'Close navigation panel' : 'Open navigation panel'}
-              className="hidden md:inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/30 bg-white/60 dark:bg-white/10 hover:bg-white/80 dark:hover:bg-white/20 shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-            >
-              {/* Breadcrumb / bars mimic */}
-              <span className="flex flex-col gap-[3px] w-4">
-                <span className="h-[2px] rounded bg-gradient-to-r from-indigo-500 to-indigo-400 w-full" />
-                <span className="h-[2px] rounded bg-gradient-to-r from-indigo-500 to-indigo-400 w-3/4" />
-                <span className="h-[2px] rounded bg-gradient-to-r from-indigo-500 to-indigo-400 w-1/2" />
-              </span>
-            </button>
-            <Link href="/" className="flex items-center gap-2 group" aria-label="CalcHub Home">
-              <h1 className="text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-indigo-400 dark:from-indigo-300 dark:to-indigo-500">CalcHub</h1>
+            <Link href="/" className="flex items-center gap-2 group" aria-label="ToolSynth Home">
+              <h1 className="text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400">ToolSynth</h1>
             </Link>
           </div>
 
@@ -156,16 +144,16 @@ export default function Header() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -8 }}
                         transition={{ duration: 0.18, ease: 'easeOut' }}
-                        className="absolute left-0 top-full mt-2 w-64 rounded-xl border border-white/20 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-lg shadow-xl py-2 overflow-hidden"
+                        className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-[680px] max-w-[85vw] rounded-xl border border-white/20 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-lg shadow-xl py-4 overflow-hidden"
                         onMouseEnter={() => openDropdown(cat.key)}
                       >
-                        <ul className="outline-none" tabIndex={-1}>
+                        <ul className="outline-none grid grid-cols-2 gap-1 sm:gap-2 p-2" tabIndex={-1}>
                           {cat.items.map(item => (
                             <li key={item.href} role="none">
                               <Link
                                 role="menuitem"
                                 href={item.href}
-                                className="flex items-center justify-between w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 group transition-colors"
+                                className="flex items-center justify-between w-full px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-lg group transition-colors"
                               >
                                 <span className="font-medium tracking-tight">{item.label}</span>
                                 {item.icon}
@@ -186,13 +174,6 @@ export default function Header() {
 
           {/* Mobile controls */}
           <div className="flex items-center gap-2 lg:hidden">
-            <button
-              onClick={toggleSidebar}
-              aria-label={sidebarOpen ? 'Close navigation panel' : 'Open navigation panel'}
-              className="p-2 rounded-lg bg-white/70 dark:bg-white/10 backdrop-blur-md border border-white/30 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-            >
-              <Menu className="h-6 w-6" />
-            </button>
             <ThemeToggle />
             <button
               aria-label="Toggle menu"
@@ -200,7 +181,7 @@ export default function Header() {
               onClick={() => setMobileOpen(o => !o)}
               className="p-2 rounded-lg bg-white/70 dark:bg-white/10 backdrop-blur-md border border-white/30 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
             >
-              {mobileOpen ? <X className="h-6 w-6" /> : <ChevronDown className="h-6 w-6" />}
+              {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
@@ -230,7 +211,7 @@ export default function Header() {
               aria-label="Mobile navigation"
             >
               <div className="px-6 pt-6 pb-4 border-b border-white/20 flex items-center justify-between">
-                <Link href="/" className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-indigo-400" onClick={() => setMobileOpen(false)}>CalcHub</Link>
+                <Link href="/" className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600" onClick={() => setMobileOpen(false)}>ToolSynth</Link>
                 <button
                   onClick={() => setMobileOpen(false)}
                   aria-label="Close menu"

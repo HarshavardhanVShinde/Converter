@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { Heart, Weight, Ruler, Activity } from 'lucide-react'
 import { GlassCard } from '@/components/ui/glass-card'
 import { motion } from 'framer-motion'
+import StructuredData from '@/components/seo/structured-data'
+import { getWebPageJsonLd, siteUrl } from '@/lib/seo'
 
 export default function BMICalculator() {
   const [weight, setWeight] = useState<string>('70')
@@ -117,6 +119,12 @@ export default function BMICalculator() {
 
   return (
     <div className="pt-8 pb-24 max-w-7xl mx-auto px-4 sm:px-8">
+      <StructuredData data={getWebPageJsonLd({
+        name: 'BMI Calculator',
+        description: 'Calculate your BMI to understand weight status and recommendations.',
+        url: `${siteUrl}/bmi-calculator`,
+        breadcrumb: ['Home', 'BMI Calculator']
+      })} />
       {/* Header */}
       <div className="mb-12 text-center">
         <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 to-pink-500 shadow-soft text-white">
