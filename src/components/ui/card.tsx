@@ -3,7 +3,7 @@ import React from 'react';
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={`bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden ${className}`}
+    className={`bg-white dark:bg-gray-800/20 shadow-sm rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700/50 ${className}`}
     {...props}
   />
 ));
@@ -12,7 +12,7 @@ Card.displayName = 'Card';
 const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={`p-6 border-b border-gray-200 dark:border-gray-700 ${className}`}
+    className={`p-6 border-b border-gray-200/70 dark:border-gray-700/50 ${className}`}
     {...props}
   />
 ));

@@ -78,11 +78,11 @@ export default function RootLayout({
   };
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} font-sans antialiased min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-100 dark:from-[#0f172a] dark:via-[#0b1120] dark:to-[#020617] relative`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} font-sans antialiased min-h-screen bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 relative`}>
         {/* Ambient radial accent */}
         <div className="pointer-events-none absolute inset-0 [mask-image:radial-gradient(circle_at_center,white,transparent_70%)]">
-          <div className="absolute -top-32 -left-24 h-96 w-96 rounded-full bg-indigo-200/40 dark:bg-indigo-500/20 blur-3xl" />
-          <div className="absolute bottom-0 right-0 h-[28rem] w-[28rem] rounded-full bg-emerald-200/40 dark:bg-emerald-500/10 blur-3xl" />
+          <div className="absolute -top-32 -left-24 h-96 w-96 rounded-full bg-indigo-200/20 dark:bg-indigo-500/10 blur-3xl" />
+          <div className="absolute bottom-0 right-0 h-[28rem] w-[28rem] rounded-full bg-emerald-200/20 dark:bg-emerald-500/5 blur-3xl" />
         </div>
         {/* Global structured data */}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
